@@ -1,0 +1,9 @@
+﻿@model BookingViewModel
+@{
+    string strTitle = "Книга выдана";
+    ViewBag.Title = strTitle;
+}
+<h2>Книга выдана</h2>
+<h3>Срок возврата до: @Model.FinishedOn</h3>
+<h3>Почта пользователя: @Model.UserEmail</h3>
+<a class="glo" asp-area="Moderator" asp-controller="Booking" asp-action="Show">Вернуться к списку броней</a>

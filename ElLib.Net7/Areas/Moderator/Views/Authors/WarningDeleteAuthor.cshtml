@@ -1,0 +1,11 @@
+﻿@model AuthorViewModel
+@{
+    string strTitle = "Внимание!";
+    ViewBag.Title = strTitle;
+}
+<h2>Удалив автора: @Model.Name, вы так же удалите все книги которые к нему относятся</h2>
+<form id="form-@Model.Id" asp-area="Moderator" asp-controller="Authors" asp-action="DeleteAuthor" method="post">
+    <input type="hidden" name="id" value="@Model.Id">
+    <a class="glo" href="#" onclick="document.getElementById('form-@Model.Id').submit();">Удалить</a>
+</form>
+<a class="glo" asp-area="Moderator" asp-controller="Home" asp-action="Index">Вернуться</a>

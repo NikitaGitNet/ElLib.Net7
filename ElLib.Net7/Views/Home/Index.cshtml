@@ -1,0 +1,8 @@
+﻿@model TextField
+@{
+    string strTitle = @Model.Title;
+    ViewBag.Title = strTitle;
+}
+<div>
+    @Html.Raw(Model.Text)
+</div>

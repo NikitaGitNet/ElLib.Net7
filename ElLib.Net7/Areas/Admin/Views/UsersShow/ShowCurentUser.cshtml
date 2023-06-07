@@ -1,0 +1,50 @@
+﻿@model UserModel
+@{
+    string strTitle = "Пользователь:" + @Model.UserName;
+    ViewBag.Title = strTitle;
+}
+<h2>Электронная почта: @Model.UserEmail</h2>
+<h2>Имя пользователя: @Model.UserName</h2>
+<h2>Дата регистрации: @Model.CreateOn</h2>
+<hr>
+<div>
+    <form asp-area="Admin" asp-controller="UsersShow" asp-action="ChangePassword" method="post">
+        <input type="hidden" name="id" value="@Model.Id">
+        <div class="inputBox">
+            <h2>Новый пароль:</h2>
+            <input asp-for="Password">
+            <span asp-validation-for="Password"></span>
+        </div>
+        <input style="display: inline-block;" type="submit" class="glo" value="Сменить пароль">
+    </form>
+</div>
+
+<hr>
+<h2>Брони пользователя:</h2>
+    @if (Model.Bookings != null)
+    {
+        @foreach (var item in Model.Bookings)
+        {
+            <p>Название книги: @item.BooksTitle</p>
+            <p>Дата создания брони: @item.CreateOn</p>
+            <p>Дата окончания брони: @item.FinishedOn</p>
+            @if (@item.IssueBooking)
+            {
+                <p class="Alert">Книга выдана</p>
+            }
+            else
+            {
+               <p>Книга ожидает выдачи</p>
+            }
+            <hr>
+        }
+    }
+    else
+    {   
+        <p>У пользователя пока нет броней</p>
+    }
+    <form id="form-@Model.Id" asp-area="Admin" asp-controller="UsersShow" asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@Model.Id">
+        <a class="glo" href="#" onclick="document.getElementById('form-@Model.Id').submit();">Удалить пользователя</a>
+    </form>
+    

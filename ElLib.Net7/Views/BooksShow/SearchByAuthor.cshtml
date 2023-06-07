@@ -1,0 +1,11 @@
+﻿@model AuthorListViewModel
+@{
+    string strTitle = "Поиск по автору";
+    ViewBag.Title = strTitle;
+}
+<ul>
+@foreach (var item in Model.Authors)
+{
+    <li><a class="glo" asp-controller="BooksShow" asp-action="SearchByAuthor" asp-route-id="@item.Id">@item.Name</a></li>
+}
+</ul>

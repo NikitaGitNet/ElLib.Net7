@@ -1,0 +1,109 @@
+﻿@model BookViewModel
+@{
+    string strTitle = @Model.Title;
+    ViewBag.Title = strTitle;
+}
+
+<script src="~/js/ckeditor/ckeditor.js"></script>
+
+<div>
+    <h4 class="H2Title">@Model.Title</h4>
+    <h3>@Model.SubTitle</h3>
+    <div>
+        <img class="img-block UlImage" src="~/images/@Model.TitleImagePath">
+    </div>
+    <div class="indent"></div>
+    <div>
+        <h3>Автор: @Model.Author</h3>
+        <h3>Жанр: @Model.Genre</h3>
+        <h3>Дата добавления: @Model.DateAdded</h3>
+    </div>
+</div>
+<div>
+    <h3>Описание книги: @Html.Raw(Model.Text)</h3>
+</div>
+
+
+
+<hr>
+<h3 class="H2Title">Комментарии пользователей:</h3>
+<hr>
+    @if (Model.Comments.Any())
+    {
+        <div class="BooksShow">
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="Comment">
+                <h3>@comment.UserName</h3>
+                <p>@comment.CreatedDate</p>
+            </div>
+            <div class="CommentText">
+                @Html.Raw(comment.CommentText)
+            </div>
+            @if (User.IsInRole("moderator") || User.IsInRole("admin"))
+            {
+                <form style="display: inline-block;" id="form-@comment.Id" asp-area="" asp-controller="Comment" asp-action="Delete" method="post">
+                <input type="hidden" name="id" value="@comment.Id">
+                <input hidden name="BookId" value="@Model.Id">
+                <a href="#" onclick="document.getElementById('form-@comment.Id').submit();">Удалить</a>
+                </form>
+            }
+            @if (comment.UserId == Model.CurentUserId && !(User.IsInRole("moderator") || User.IsInRole("admin")) )
+            {
+                <form style="display: inline-block;" id="form-@comment.Id" asp-area="" asp-controller="Comment" asp-action="Delete" method="post">
+                <input type="hidden" name="id" value="@comment.Id">
+                <input hidden name="BookId" value="@Model.Id">
+                <a href="#" onclick="document.getElementById('form-@comment.Id').submit();">Удалить</a>
+                </form>
+            }
+            <hr>
+        }
+        </div>
+    }
+    else
+    {
+        <h2>Комментариев нет</h2>
+    }
+
+
+
+@if (User.Identity.IsAuthenticated)
+{
+     <div>
+    <form asp-controller="Comment" asp-action="Write" method="post" enctype="multipart/form-data">
+    <div class="div-box">
+        <textarea asp-for="CommentText"></textarea>
+        <span asp-validation-for="CommentText"></span>
+    </div>
+    <div hidden class="div-box">
+        <textarea asp-for="Id"></textarea>
+        <span asp-validation-for="Id"></span>
+    </div>
+    <input type="submit" value="Оставить комментарий" class="glo">
+    </form>
+    <form asp-controller="Booking" asp-action="Booking" method="post" enctype="multipart/form-data">
+        <div hidden class="div-box">
+        <textarea asp-for="Id"></textarea>
+        <span asp-validation-for="Id"></span>
+        </div>
+        <div class="div-box">
+            @if (Model.IsBooking)
+            {
+                <h2>Книги нет в наличии, бронь не возможна</h2>
+            }
+            else
+            {
+                <input type="submit" value="Бронировать" class="glo">
+            }
+        </div>
+    </form>
+</div>   
+}
+
+<script>
+    window.onload = function() { 
+        var newCKEdit = CKEDITOR.replace('@Html.IdFor(x=>x.CommentText)');
+        newCKEdit.updateElement();
+    }
+</script>
+
